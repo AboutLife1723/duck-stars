@@ -329,6 +329,33 @@ async function spinSlots() {
 
     resultDuck.src = 'assets/spin_duck.gif';
     resultText.className = 'result-text';
+    // ... твой код, который уже есть на скриншоте:
+    resultDuck.src = 'assets/spin_duck.gif';
+    resultText.className = 'result-text';
+
+    // ВСТАВЛЯЙ СЮДА:
+    setTimeout(() => {
+        // 1. Останавливаем флаг кручения, чтобы можно было нажать снова
+        STATE.slots.isSpinning = false;
+        
+        // 2. Возвращаем кнопку в рабочее состояние
+        spinBtn.disabled = false;
+        spinBtn.textContent = '🎰 Крутить';
+
+        // 3. Убираем "крутящуюся" гифку и ставим обычную утку
+        // Убедись, что файл duck.png лежит в папке assets 
+
+        // 4. Выводим текст результата (можешь заменить на свою логику выигрыша)
+        resultText.textContent = 'Игра окончена!';
+        
+        // 5. Отправляем данные в Telegram, чтобы бот узнал о завершении
+        if (window.Telegram && window.Telegram.WebApp) {
+            window.Telegram.WebApp.sendData(JSON.stringify({
+                game: 'slots',
+                status: 'finished'
+            }));
+        }
+    }, 3000); // 3000 — это 3 секунды, через которые всё "отвиснет"
     resultText.textContent = '🎰 Крутим барабаны...';
 
     const isWin = rollWin();
