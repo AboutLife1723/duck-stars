@@ -332,21 +332,26 @@ async function spinSlots() {
     // ... твой код, который уже есть на скриншоте:
     resultDuck.src = 'assets/spin_duck.gif';
     resultText.className = 'result-text';
+// Твой код запуска анимации
+    resultDuck.src = 'assets/spin_duck.gif';
+    spinBtn.disabled = true;
+    spinBtn.textContent = '⏳ Крутится...';
 
-    // ВСТАВЛЯЙ СЮДА:
+    // ПРИНУДИТЕЛЬНАЯ РАЗБЛОКИРОВКА через 3 секунды
     setTimeout(() => {
-        // 1. Останавливаем флаг кручения, чтобы можно было нажать снова
+        console.log("Разблокировка кнопки..."); // Это для отладки
+        
         STATE.slots.isSpinning = false;
         
-        // 2. Возвращаем кнопку в рабочее состояние
-        spinBtn.disabled = false;
-        spinBtn.textContent = '🎰 Крутить';
+        const btn = document.getElementById('spinBtn'); // Берем кнопку заново на всякий случай
+        if (btn) {
+            btn.disabled = false;
+            btn.textContent = '🎰 Крутить';
+        }
 
-        // 3. Убираем "крутящуюся" гифку и ставим обычную утку
-        // Убедись, что файл duck.png лежит в папке assets 
-
-        // 4. Выводим текст результата (можешь заменить на свою логику выигрыша)
-        resultText.textContent = 'Игра окончена!';
+        // Возвращаем обычную картинку вместо гифки
+        resultDuck.src = 'assets/duck.png'; 
+    }, 3000);
         
         // 5. Отправляем данные в Telegram, чтобы бот узнал о завершении
         if (window.Telegram && window.Telegram.WebApp) {
