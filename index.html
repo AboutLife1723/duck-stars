@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <meta name="theme-color" content="#0a0a0f" />
+    <title>🦆 Duck Stars</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+    <!-- Шапка с балансом -->
+    <header class="app-header">
+        <div class="header-left">
+            <span class="app-logo">🦆</span>
+            <span class="app-title">Duck Stars</span>
+        </div>
+        <div class="header-right">
+            <div class="balance-chip">
+                <span class="balance-icon">⭐</span>
+                <span class="balance-amount" id="balanceDisplay">25</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Основной контент -->
+    <main class="app-content">
+        <!-- Задания -->
+        <section class="tab-section active" id="section-tasks" data-tab="tasks">
+            <div class="section-header">
+                <h2 class="section-title">📋 Задания</h2>
+                <p class="section-subtitle">Выполняй задания и получай бонусы</p>
+            </div>
+            
+            <div class="tasks-grid">
+                <div class="task-card" data-reward="10">
+                    <div class="task-icon">🎯</div>
+                    <div class="task-info">
+                        <span class="task-name">Первая игра</span>
+                        <span class="task-reward">+10 ⭐</span>
+                    </div>
+                    <button class="task-btn" id="task-first-game">Начать</button>
+                </div>
+                
+                <div class="task-card daily" data-reward="15">
+                    <div class="task-icon">📅</div>
+                    <div class="task-info">
+                        <span class="task-name">Ежедневный бонус</span>
+                        <span class="task-reward">+15 ⭐</span>
+                    </div>
+                    <button class="task-btn daily-btn" id="dailyBonus">Забрать</button>
+                </div>
+                
+                <div class="task-card" data-reward="25">
+                    <div class="task-icon">🏆</div>
+                    <div class="task-info">
+                        <span class="task-name">Выиграй 3 раза подряд</span>
+                        <span class="task-reward">+25 ⭐</span>
+                    </div>
+                    <button class="task-btn locked" disabled>🔒</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Краш -->
+        <section class="tab-section hidden" id="section-crash" data-tab="crash">
+            <div class="section-header">
+                <h2 class="section-title">🚀 Краш</h2>
+                <p class="section-subtitle">Успей забрать до падения!</p>
+            </div>
+            
+            <div class="crash-arena">
+                <div class="crash-multiplier-display">
+                    <span id="crashMultiplier">1.00</span>
+                    <span class="crash-x">x</span>
+                </div>
+                <canvas id="crashCanvas" width="340" height="200"></canvas>
+                <div class="crash-duck-container">
+                    <img src="assets/spin_duck.gif" alt="duck" class="crash-duck" id="crashDuck" />
+                </div>
+            </div>
+            
+            <div class="bet-panel">
+                <div class="bet-label">Ставка:</div>
+                <div class="bet-grid" id="crashBetGrid">
+                    <button class="bet-btn" data-amount="3">3</button>
+                    <button class="bet-btn" data-amount="5">5</button>
+                    <button class="bet-btn active" data-amount="10">10</button>
+                    <button class="bet-btn" data-amount="25">25</button>
+                    <button class="bet-btn" data-amount="50">50</button>
+                    <button class="bet-btn" data-amount="100">100</button>
+                    <button class="bet-btn" data-amount="500">500</button>
+                    <button class="bet-btn" data-amount="1000">1000</button>
+                </div>
+                <div class="action-buttons">
+                    <button class="action-btn primary" id="crashStart">🚀 Старт</button>
+                    <button class="action-btn danger hidden" id="crashCashout">💰 Забрать!</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Арена (Слоты) -->
+        <section class="tab-section hidden" id="section-arena" data-tab="arena">
+            <div class="section-header">
+                <h2 class="section-title">⚔️ Арена Слотов</h2>
+                <p class="section-subtitle">Совпади символы и сорви джекпот!</p>
+            </div>
+            
+            <div class="slot-machine">
+                <div class="slot-reels-container">
+                    <div class="slot-reel" id="reel1">
+                        <div class="reel-inner" id="reelInner1"></div>
+                    </div>
+                    <div class="slot-divider">|</div>
+                    <div class="slot-reel" id="reel2">
+                        <div class="reel-inner" id="reelInner2"></div>
+                    </div>
+                    <div class="slot-divider">|</div>
+                    <div class="slot-reel" id="reel3">
+                        <div class="reel-inner" id="reelInner3"></div>
+                    </div>
+                </div>
+                <div class="slot-result-line"></div>
+            </div>
+            
+            <div class="game-result" id="slotResult">
+                <img src="assets/spin_duck.gif" alt="duck" class="result-duck" id="resultDuck" />
+                <span class="result-text" id="resultText">Крути барабаны!</span>
+            </div>
+            
+            <div class="bet-panel">
+                <div class="bet-label">Ставка:</div>
+                <div class="bet-grid" id="slotBetGrid">
+                    <button class="bet-btn" data-amount="3">3</button>
+                    <button class="bet-btn" data-amount="5">5</button>
+                    <button class="bet-btn active" data-amount="10">10</button>
+                    <button class="bet-btn" data-amount="25">25</button>
+                    <button class="bet-btn" data-amount="50">50</button>
+                    <button class="bet-btn" data-amount="100">100</button>
+                    <button class="bet-btn" data-amount="500">500</button>
+                    <button class="bet-btn" data-amount="1000">1000</button>
+                </div>
+                <button class="action-btn primary full-width" id="spinBtn">🎰 Крутить!</button>
+            </div>
+        </section>
+
+        <!-- Рулетка -->
+        <section class="tab-section hidden" id="section-roulette" data-tab="roulette">
+            <div class="section-header">
+                <h2 class="section-title">🎡 Рулетка</h2>
+                <p class="section-subtitle">Выбери цвет и испытай удачу</p>
+            </div>
+            
+            <div class="roulette-container">
+                <div class="roulette-track-wrapper">
+                    <div class="roulette-arrow">▼</div>
+                    <div class="roulette-track" id="rouletteTrack"></div>
+                </div>
+                
+                <div class="roulette-bets">
+                    <button class="roulette-bet-btn red" data-color="red" data-mult="2">
+                        🔴 Красное <span>x2</span>
+                    </button>
+                    <button class="roulette-bet-btn black" data-color="black" data-mult="2">
+                        ⚫ Чёрное <span>x2</span>
+                    </button>
+                    <button class="roulette-bet-btn gold" data-color="gold" data-mult="14">
+                        🟡 Золото <span>x14</span>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="bet-panel">
+                <div class="bet-label">Ставка:</div>
+                <div class="bet-grid" id="rouletteBetGrid">
+                    <button class="bet-btn" data-amount="3">3</button>
+                    <button class="bet-btn" data-amount="5">5</button>
+                    <button class="bet-btn active" data-amount="10">10</button>
+                    <button class="bet-btn" data-amount="25">25</button>
+                    <button class="bet-btn" data-amount="50">50</button>
+                    <button class="bet-btn" data-amount="100">100</button>
+                    <button class="bet-btn" data-amount="500">500</button>
+                    <button class="bet-btn" data-amount="1000">1000</button>
+                </div>
+                <button class="action-btn primary full-width" id="rouletteSpinBtn">🎡 Запустить!</button>
+            </div>
+        </section>
+
+        <!-- Монетка -->
+        <section class="tab-section hidden" id="section-coin" data-tab="coin">
+            <div class="section-header">
+                <h2 class="section-title">🪙 Монетка</h2>
+                <p class="section-subtitle">Угадай сторону — выиграй x1.9!</p>
+            </div>
+            
+            <div class="coin-arena">
+                <div class="coin-container">
+                    <div class="coin" id="gameCoin">
+                        <div class="coin-face front">
+                            <span>⭐</span>
+                            <span class="coin-label">Звезда</span>
+                        </div>
+                        <div class="coin-face back">
+                            <span>✨</span>
+                            <span class="coin-label">Искра</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="coin-duck-result" id="coinDuckResult">
+                    <img src="assets/spin_duck.gif" alt="" id="coinDuck" class="coin-duck" />
+                    <span id="coinResultText">Выбери сторону!</span>
+                </div>
+                
+                <div class="coin-choice-btns">
+                    <button class="coin-choice active" data-side="heads" id="choiceHeads">⭐ Звезда</button>
+                    <button class="coin-choice" data-side="tails" id="choiceTails">✨ Искра</button>
+                </div>
+            </div>
+            
+            <div class="bet-panel">
+                <div class="bet-label">Ставка:</div>
+                <div class="bet-grid" id="coinBetGrid">
+                    <button class="bet-btn" data-amount="3">3</button>
+                    <button class="bet-btn" data-amount="5">5</button>
+                    <button class="bet-btn active" data-amount="10">10</button>
+                    <button class="bet-btn" data-amount="25">25</button>
+                    <button class="bet-btn" data-amount="50">50</button>
+                    <button class="bet-btn" data-amount="100">100</button>
+                    <button class="bet-btn" data-amount="500">500</button>
+                    <button class="bet-btn" data-amount="1000">1000</button>
+                </div>
+                <button class="action-btn primary full-width" id="coinFlipBtn">🪙 Подбросить!</button>
+            </div>
+        </section>
+    </main>
+
+    <!-- Нижняя навигация -->
+    <nav class="bottom-tab-bar" id="tabBar">
+        <button class="tab-item active" data-tab="tasks">
+            <span class="tab-icon">📋</span>
+            <span class="tab-label">Задания</span>
+        </button>
+        <button class="tab-item" data-tab="crash">
+            <span class="tab-icon">🚀</span>
+            <span class="tab-label">Краш</span>
+        </button>
+        <button class="tab-item" data-tab="arena">
+            <span class="tab-icon">⚔️</span>
+            <span class="tab-label">Арена</span>
+        </button>
+        <button class="tab-item" data-tab="roulette">
+            <span class="tab-icon">🎡</span>
+            <span class="tab-label">Рулетка</span>
+        </button>
+        <button class="tab-item" data-tab="coin">
+            <span class="tab-icon">🪙</span>
+            <span class="tab-label">Монетка</span>
+        </button>
+    </nav>
+
+    <!-- Контейнер для уведомлений -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
